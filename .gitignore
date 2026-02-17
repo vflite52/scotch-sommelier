@@ -1,0 +1,40 @@
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Uploads and local data
+uploads/
+
+# IDE and config
+.cursor/
+.config/
+.streamlit/credentials.toml
+.streamlit/machine_id_v4
+
+# Cache and local
+.cache/
+*.log
+
+# Shell and local data
+.bash_history
+.bash_logout
+.bashrc
+.profile
+.sommelierrc
+.local/
+.pki/
+.Xauthority
+.sudo_as_admin_successful
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -22,7 +22,15 @@ if img_file_buffer is not None:
         try:
             response = client.models.generate_content(
                 model="gemini-2.0-flash",
-                contents=["Identify this scotch, its region, and a food pairing.", img]
+                contents=[
+                    "Identify this scotch whisky from the bottle image. In your response, use this exact structure and headings:\n\n"
+                    "**Scotch:** [name]\n\n"
+                    "**Region:** [region]\n\n"
+                    "**Primary Tasting Notes:** [2–4 main tasting notes, e.g. smoke, honey, citrus, peat]\n\n"
+                    "**Food Pairing:** [suggestion]\n\n"
+                    "Keep each section concise.",
+                    img
+                ]
             )
             
             # 4. Display the Result
