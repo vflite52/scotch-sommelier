@@ -12,7 +12,26 @@ API_KEY = st.secrets["GEMINI_API_KEY"]
 client = genai.Client(api_key=API_KEY)
 
 # 3. The Camera Widget (Works on your phone!)
-img_file_buffer = st.camera_input("Take a photo of the bottle")
+st.markdown("""
+<style>
+    /* Make the camera input area stand out */
+    div[data-testid="stCameraInput"] {
+        border: 3px solid #2563eb;
+        border-radius: 16px;
+        padding: 1rem;
+        background: linear-gradient(145deg, #eff6ff 0%, #dbeafe 100%);
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+    }
+    div[data-testid="stCameraInput"] label {
+        font-weight: 700 !important;
+        font-size: 1.1rem !important;
+        color: #1e40af !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+st.markdown("### 📸 Take a photo of the bottle")
+st.markdown("Point your camera at the whisky bottle label for the best result.")
+img_file_buffer = st.camera_input("Take a photo of the bottle", label_visibility="collapsed")
 
 if img_file_buffer is not None:
     # Open the image for Gemini
