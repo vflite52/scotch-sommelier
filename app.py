@@ -1,9 +1,42 @@
 import streamlit as st
 from google import genai
 from PIL import Image
+import base64
+from pathlib import Path
 
 # 1. Page Config (Makes it look like an app)
-st.set_page_config(page_title="Keith's Scotch Sommelier", page_icon="🥃")
+st.set_page_config(page_title="Keith's Scotch Sommelier", page_icon="🥃", layout="wide")
+
+# --- Background image: set one of these (or leave both empty for no background) ---
+BACKGROUND_IMAGE_URL = ""   # e.g. "https://example.com/whisky-bar.jpg"
+BACKGROUND_IMAGE_PATH = "assets/PXL_20230117_045041805.MP~2.jpg"  # Your background image
+
+def _get_background_css():
+    if BACKGROUND_IMAGE_URL:
+        url = BACKGROUND_IMAGE_URL
+    elif BACKGROUND_IMAGE_PATH and Path(BACKGROUND_IMAGE_PATH).exists():
+        with open(BACKGROUND_IMAGE_PATH, "rb") as f:
+            data = base64.b64encode(f.read()).decode()
+        ext = Path(BACKGROUND_IMAGE_PATH).suffix.lower()
+        mime = "image/jpeg" if ext in (".jpg", ".jpeg") else "image/png" if ext == ".png" else "image/webp"
+        url = f"data:{mime};base64,{data}"
+    else:
+        return ""
+    return f"""
+    <style>
+    .stApp {{
+        background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+                    url("{url}") center/cover no-repeat fixed;
+    }}
+    /* Optional: make main content area slightly opaque so it stands out */
+    .stApp > div {{ background: rgba(255,255,255,0.92); }}
+    </style>
+    """
+
+_bg_css = _get_background_css()
+if _bg_css:
+    st.markdown(_bg_css, unsafe_allow_html=True)
+
 st.title("🥃 Keith's Scotch Sommelier")
 
 # 2. Setup Gemini
@@ -59,4 +92,4 @@ if img_file_buffer is not None:
         except Exception as e:
             st.error(f"Error: {e}")
 
-st.write("Tip: Take the photo in good lighting for the best results!")
+st.write("Cheers!")
