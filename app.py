@@ -47,22 +47,31 @@ if img_file_buffer is not None:
             response = client.models.generate_content(
                 model="gemini-2.0-flash",
                 contents=[
-                    "Identify this scotch whisky from the bottle image. In your response, use this exact structure and headings:\n\n"
+                    "Look at this bottle image and determine if it is a scotch whisky.\n\n"
+                    "IF it IS scotch whisky, respond with this exact structure:\n\n"
                     "**Scotch:** [name]\n\n"
                     "**Region:** [region]\n\n"
                     "**Primary Tasting Notes:** [2–4 main tasting notes, e.g. smoke, honey, citrus, peat]\n\n"
                     "**Food Pairing:** [suggestion]\n\n"
-                    "Keep each section concise.",
+                    "Keep each section concise.\n\n"
+                    "IF it is NOT scotch whisky, respond with ONLY this exact message (nothing else):\n\n"
+                    "That's not scotch! Put that down immediately and go pour yourself a proper drink! SMH.",
                     img
                 ]
             )
             
             # 4. Display the Result
-            st.success("Analysis Complete!")
-            st.markdown(response.text)
-            st.write("Cheers!")
-            if Path(BOTTOM_IMAGE_PATH).exists():
-                st.image(BOTTOM_IMAGE_PATH, use_container_width=True)
+            response_text = response.text.strip()
+            
+            # Check if it's the non-scotch message
+            if "That's not scotch!" in response_text:
+                st.warning(response_text)
+            else:
+                st.success("Analysis Complete!")
+                st.markdown(response_text)
+                st.write("Cheers!")
+                if Path(BOTTOM_IMAGE_PATH).exists():
+                    st.image(BOTTOM_IMAGE_PATH, use_container_width=True)
             
         except Exception as e:
             st.error(f"Error: {e}")
