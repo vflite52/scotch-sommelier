@@ -3,8 +3,8 @@ from google import genai
 from PIL import Image
 
 # 1. Page Config (Makes it look like an app)
-st.set_page_config(page_title="Scotch Sommelier", page_icon="🥃")
-st.title("🥃 Scotch Sommelier")
+st.set_page_config(page_title="Keith's Scotch Sommelier", page_icon="🥃")
+st.title("🥃 Keith's Scotch Sommelier")
 
 # 2. Setup Gemini
 # Tip: In a real app, we'd use 'st.secrets' to hide this!
