@@ -52,8 +52,9 @@ if img_file_buffer is not None:
                     "**Scotch:** [name]\n\n"
                     "**Region:** [region]\n\n"
                     "**Primary Tasting Notes:** [2–4 main tasting notes, e.g. smoke, honey, citrus, peat]\n\n"
-                    "**Food Pairing:** [suggestion]\n\n"
-                    "Keep each section concise.\n\n"
+                    "**Food Pairing:** [Provide detailed food pairing suggestions including specific dishes, why they complement the scotch's flavor profile, and any preparation notes. Include 2-3 specific pairing recommendations with explanations of how the flavors interact.]\n\n"
+                    "**Skill Level:** [Choose one: Beginners, Novices, or Experienced. Consider the scotch's complexity, intensity, and typical drinker preferences.]\n\n"
+                    "Keep each section concise but informative.\n\n"
                     "IF it is NOT scotch whisky, respond with ONLY this exact message (nothing else):\n\n"
                     "That's not scotch! Put that down immediately and go pour yourself a proper drink! SMH.",
                     img
