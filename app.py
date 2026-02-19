@@ -32,11 +32,62 @@ st.markdown("""
         font-size: 1.1rem !important;
         color: #1e40af !important;
     }
+    /* Style for camera icon toggle/checkbox */
+    .stCheckbox > label {
+        font-size: 2rem !important;
+        padding: 0.5rem !important;
+    }
+    /* Hide the default checkbox and style as toggle */
+    div[data-testid="stCheckbox"] {
+        margin-bottom: 1rem;
+    }
 </style>
 """, unsafe_allow_html=True)
-st.markdown("### 📸 Take a photo of the bottle")
-st.markdown("Point your camera at the whisky bottle label for the best result.")
-img_file_buffer = st.camera_input("Take a photo of the bottle", label_visibility="collapsed")
+
+# Initialize session state for camera activation
+if 'camera_activated' not in st.session_state:
+    st.session_state.camera_activated = False
+if 'photo_taken' not in st.session_state:
+    st.session_state.photo_taken = False
+
+img_file_buffer = None
+
+# Show camera icon toggle if camera hasn't been activated yet
+if not st.session_state.camera_activated:
+    st.markdown("### 📸 Take a photo of the bottle")
+    st.markdown("Point your camera at the whisky bottle label for the best result.")
+    
+    # Camera icon toggle - using checkbox styled as toggle with camera icon
+    camera_toggle = st.checkbox("📷", key="camera_toggle")
+    if camera_toggle:
+        st.session_state.camera_activated = True
+        st.rerun()
+
+# Show camera input after toggle is activated
+if st.session_state.camera_activated:
+    if not st.session_state.photo_taken:
+        st.markdown("### 📸 Camera Active")
+        st.markdown("Point your camera at the whisky bottle label for the best result.")
+        img_file_buffer = st.camera_input("Take a photo of the bottle", label_visibility="collapsed", key="camera_input")
+        
+        if img_file_buffer is not None:
+            st.session_state.photo_taken = True
+            st.session_state.img_file_buffer = img_file_buffer
+            st.rerun()
+    else:
+        # Photo has been taken, show "Take Photo" toggle to capture again
+        st.markdown("### 📸 Take a photo of the bottle")
+        take_photo_toggle = st.toggle("Take Photo", key="take_photo_toggle")
+        
+        if take_photo_toggle:
+            # Reset to show camera again
+            st.session_state.photo_taken = False
+            # Reset the toggle state
+            st.session_state.take_photo_toggle = False
+            st.rerun()
+        
+        # Use the stored image
+        img_file_buffer = st.session_state.img_file_buffer
 
 if img_file_buffer is not None:
     # Open the image for Gemini
