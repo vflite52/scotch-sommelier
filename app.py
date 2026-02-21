@@ -171,8 +171,8 @@ if img_file_buffer is not None:
                     '</div>',
                     unsafe_allow_html=True
                 )
-                # Giphy embed (Tenor direct URLs often 403); same "Wrong" hot dog ITYSL vibe
-                wrong_gif_url = "https://media.giphy.com/media/sQm85jdRoxToCmEKq5/giphy.gif"
+                # ITYSL hot dog "Wrong!" GIF (Netflix official on Giphy)
+                wrong_gif_url = "https://media.giphy.com/media/NoWjbfCCmxwsGjFWF3/giphy.gif"
                 col1, col2, col3 = st.columns([1, 2, 1])
                 with col2:
                     st.image(wrong_gif_url, use_container_width=True)
