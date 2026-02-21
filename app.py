@@ -1,3 +1,4 @@
+import base64
 import streamlit as st
 from google import genai
 from PIL import Image
@@ -63,13 +64,18 @@ div[data-testid="stSuccess"], div[data-testid="stWarning"], div[data-testid="stE
 # Image shown at the bottom after a successful bottle scan
 BOTTOM_IMAGE_PATH = "assets/PXL_20230117_045041805.MP~2.jpg"
 
-# Title with Glencairn glass icon (same visual size as the emoji)
+# Title with Glencairn glass icon to the left, transparent, height = two title lines
 if Path(GLENCAIRN_ICON_PATH).exists():
-    icon_col, title_col = st.columns([1, 25])
-    with icon_col:
-        st.image(GLENCAIRN_ICON_PATH, width=44)
-    with title_col:
-        st.title("Keith's Scotch Sommelier")
+    with open(GLENCAIRN_ICON_PATH, "rb") as f:
+        icon_b64 = base64.b64encode(f.read()).decode()
+    st.markdown(
+        '<div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">'
+        f'<img src="data:image/png;base64,{icon_b64}" '
+        'style="height: 4rem; width: auto; flex-shrink: 0; background: transparent;" alt="">'
+        '<span style="font-size: 2.25rem; font-weight: 600; color: #f8e9d8; letter-spacing: 0.04em; line-height: 1.2;">Keith\'s Scotch Sommelier</span>'
+        '</div>',
+        unsafe_allow_html=True
+    )
 else:
     st.title("Keith's Scotch Sommelier")
 st.markdown(
