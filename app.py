@@ -71,7 +71,7 @@ if Path(GLENCAIRN_ICON_PATH).exists():
     st.markdown(
         '<div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">'
         f'<img src="data:image/png;base64,{icon_b64}" '
-        'style="height: 5.5rem; width: auto; flex-shrink: 0; background: transparent;" alt="">'
+        'style="height: 7.15rem; width: auto; flex-shrink: 0; background: transparent;" alt="">'
         '<span style="font-size: 2.25rem; font-weight: 600; color: #f8e9d8; letter-spacing: 0.04em; line-height: 1.2;">Keith\'s Scotch Sommelier</span>'
         '</div>',
         unsafe_allow_html=True
