@@ -64,14 +64,14 @@ div[data-testid="stSuccess"], div[data-testid="stWarning"], div[data-testid="stE
 # Image shown at the bottom after a successful bottle scan
 BOTTOM_IMAGE_PATH = "assets/PXL_20230117_045041805.MP~2.jpg"
 
-# Title with Glencairn glass icon to the left, transparent, height = two title lines
+# Title with Glencairn glass icon to the left, height = two title lines (~2.25rem × 1.2 × 2)
 if Path(GLENCAIRN_ICON_PATH).exists():
     with open(GLENCAIRN_ICON_PATH, "rb") as f:
         icon_b64 = base64.b64encode(f.read()).decode()
     st.markdown(
         '<div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">'
         f'<img src="data:image/png;base64,{icon_b64}" '
-        'style="height: 4rem; width: auto; flex-shrink: 0; background: transparent;" alt="">'
+        'style="height: 5.5rem; width: auto; flex-shrink: 0; background: transparent;" alt="">'
         '<span style="font-size: 2.25rem; font-weight: 600; color: #f8e9d8; letter-spacing: 0.04em; line-height: 1.2;">Keith\'s Scotch Sommelier</span>'
         '</div>',
         unsafe_allow_html=True
@@ -172,7 +172,7 @@ if img_file_buffer is not None:
                     unsafe_allow_html=True
                 )
                 # ITYSL hot dog "Wrong!" GIF (Netflix official on Giphy)
-                wrong_gif_url = "https://media.giphy.com/media/NoWjbfCCmxwsGjFWF3/giphy.gif"
+                wrong_gif_url = "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZHN5bGhpd2d1amZiNzA3ZXl4OWNvbDE2d3VmMDhuazV5OTgyMmRvbiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/J9MnwDiwCmjkexy9e1/giphy.gif"
                 col1, col2, col3 = st.columns([1, 2, 1])
                 with col2:
                     st.image(wrong_gif_url, use_container_width=True)
