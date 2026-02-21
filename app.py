@@ -48,6 +48,14 @@ div[data-testid="stSuccess"], div[data-testid="stWarning"], div[data-testid="stE
     border: 1px solid rgba(255, 210, 150, 0.35);
     background-color: rgba(18, 10, 5, 0.95);
 }
+
+/* Response section titles (Scotch, Region, The Nose, etc.) pop from body text */
+.stMarkdown strong {
+    color: #d9a441;
+    font-size: 1.1em;
+    letter-spacing: 0.04em;
+    font-weight: 700;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -143,7 +151,7 @@ if img_file_buffer is not None:
                 st.warning(response_text)
                 st.markdown(
                     '<div style="text-align: center; margin-top: 1rem;">'
-                    '<img src="https://media.giphy.com/media/PliQy1K4YiH789Q0lf/giphy.gif" '
+                    '<img src="https://c.tenor.com/19455666.gif" '
                     'alt="Disappointed head shake" style="max-width: 300px;">'
                     '</div>',
                     unsafe_allow_html=True
