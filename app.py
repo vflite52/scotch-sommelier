@@ -123,8 +123,10 @@ if img_file_buffer is not None:
                     "IF it IS scotch whisky, respond with this exact structure:\n\n"
                     "**Scotch:** [name]\n\n"
                     "**Region:** [region]\n\n"
-                    "**Primary Tasting Notes:** [2–4 main tasting notes, e.g. smoke, honey, citrus, peat]\n\n"
-                    "**Food Pairing:** [Provide detailed food pairing suggestions including specific dishes, why they complement the scotch's flavor profile, and any preparation notes. Include 2-3 specific pairing recommendations with explanations of how the flavors interact.]\n\n"
+                    "**The Nose:** [aroma-focused notes, 2–4 key impressions]\n\n"
+                    "**The Palate:** [flavor and texture on the tongue, 2–4 key impressions]\n\n"
+                    "**The Finish:** [how the flavor lingers, 2–4 key impressions]\n\n"
+                    "**Food Pairing:** [Provide ONE detailed food pairing recommendation including the specific dish, why it complements the scotch's flavor profile, and any preparation notes. Focus on a single, well-explained pairing, not a list.]\n\n"
                     "**Skill Level:** [Choose one: Beginners, Novices, or Experienced. Consider the scotch's complexity, intensity, and typical drinker preferences.]\n\n"
                     "Keep each section concise but informative.\n\n"
                     "IF it is NOT scotch whisky, respond with ONLY this exact message (nothing else):\n\n"
@@ -139,6 +141,13 @@ if img_file_buffer is not None:
             # Check if it's the non-scotch message
             if "That's not scotch!" in response_text:
                 st.warning(response_text)
+                st.markdown(
+                    '<div style="text-align: center; margin-top: 1rem;">'
+                    '<img src="https://media.giphy.com/media/PliQy1K4YiH789Q0lf/giphy.gif" '
+                    'alt="Disappointed head shake" style="max-width: 300px;">'
+                    '</div>',
+                    unsafe_allow_html=True
+                )
             else:
                 st.success("Analysis Complete!")
                 st.markdown(response_text)
