@@ -1,14 +1,7 @@
-import io
-import queue
 import streamlit as st
 from google import genai
 from PIL import Image
 from pathlib import Path
-import av
-from streamlit_webrtc import webrtc_streamer
-
-# Thread-safe queue for latest frame from webrtc (rear camera on mobile)
-_capture_queue = queue.Queue(maxsize=1)
 
 # 1. Page Config (Makes it look like an app)
 st.set_page_config(page_title="Keith's Scotch Sommelier", page_icon="🥃", layout="wide")
@@ -94,43 +87,39 @@ with left_col:
         "- **Step 3**: Let your digital sommelier handle the rest."
     )
 
-def _video_frame_callback(frame):
-    """Feed latest frame into queue for capture (thread-safe). Prefer rear camera on mobile."""
-    img = frame.to_ndarray(format="rgb24")
-    pil = Image.fromarray(img)
-    buf = io.BytesIO()
-    pil.save(buf, format="JPEG", quality=85)
-    try:
-        _capture_queue.put_nowait(buf.getvalue())
-    except queue.Full:
-        _capture_queue.get_nowait()
-        _capture_queue.put_nowait(buf.getvalue())
-    return frame
-
 with right_col:
+    st.markdown("""
+    <style>
+        /* Camera input panel styled like a back-bar spotlight */
+        div[data-testid="stCameraInput"] {
+            border: 2px solid rgba(248, 233, 216, 0.35);
+            border-radius: 20px;
+            padding: 1.25rem;
+            background: radial-gradient(circle at top left,
+                        rgba(29, 46, 40, 0.98) 0%,
+                        rgba(10, 12, 16, 0.98) 55%,
+                        rgba(5, 6, 10, 1) 100%);
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.85),
+                        0 0 0 1px rgba(0, 0, 0, 0.9);
+        }
+        div[data-testid="stCameraInput"] label {
+            font-weight: 700 !important;
+            font-size: 1.05rem !important;
+            letter-spacing: 0.08em !important;
+            text-transform: uppercase;
+            color: #f8e9d8 !important;
+        }
+    </style>
+    """, unsafe_allow_html=True)
     st.markdown("### 📸 Capture the bottle")
     st.markdown(
-        "On phones, the **main (rear) camera** is used so you can scan the bottle. "
-        "Point the label in frame, then tap **Capture & analyze**."
+        "Point your camera at the whisky label, as if you're showing it across the bar "
+        "to a trusted bartender."
     )
-    webrtc_streamer(
-        key="bottle-camera",
-        media_stream_constraints={
-            "video": {"facingMode": "environment"},
-            "audio": False,
-        },
-        video_frame_callback=_video_frame_callback,
-    )
-    capture_clicked = st.button("Capture & analyze")
-    if capture_clicked:
-        try:
-            frame_bytes = _capture_queue.get_nowait()
-            st.session_state["captured_image_bytes"] = frame_bytes
-        except queue.Empty:
-            st.warning("No frame yet—point the camera at the bottle and try again.")
+    img_file_buffer = st.camera_input("Take a photo of the bottle", label_visibility="collapsed")
 
-if st.session_state.get("captured_image_bytes"):
-    img = Image.open(io.BytesIO(st.session_state["captured_image_bytes"]))
+if img_file_buffer is not None:
+    img = Image.open(img_file_buffer)
     
     with st.spinner("Analyzing your scotch..."):
         try:
