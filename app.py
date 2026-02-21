@@ -4,7 +4,8 @@ from PIL import Image
 from pathlib import Path
 
 # 1. Page Config (Makes it look like an app)
-st.set_page_config(page_title="Keith's Scotch Sommelier", page_icon="🥃", layout="wide")
+GLENCAIRN_ICON_PATH = "assets/glencairn_icon.png"
+st.set_page_config(page_title="Keith's Scotch Sommelier", page_icon=GLENCAIRN_ICON_PATH, layout="wide")
 
 # Global styling inspired by dim, leather-and-velvet whiskey bars
 st.markdown("""
@@ -62,7 +63,15 @@ div[data-testid="stSuccess"], div[data-testid="stWarning"], div[data-testid="stE
 # Image shown at the bottom after a successful bottle scan
 BOTTOM_IMAGE_PATH = "assets/PXL_20230117_045041805.MP~2.jpg"
 
-st.title("🥃 Keith's Scotch Sommelier")
+# Title with Glencairn glass icon (same visual size as the emoji)
+if Path(GLENCAIRN_ICON_PATH).exists():
+    icon_col, title_col = st.columns([1, 25])
+    with icon_col:
+        st.image(GLENCAIRN_ICON_PATH, width=44)
+    with title_col:
+        st.title("Keith's Scotch Sommelier")
+else:
+    st.title("Keith's Scotch Sommelier")
 st.markdown(
     "_An intimate, low-lit guide to choosing your next dram._"
 )
@@ -147,14 +156,20 @@ if img_file_buffer is not None:
             
             # Check if it's the non-scotch message
             if "That's not scotch!" in response_text:
-                st.warning(response_text)
                 st.markdown(
-                    '<div style="text-align: center; margin-top: 1rem;">'
-                    '<img src="https://c.tenor.com/19455666.gif" '
-                    'alt="Disappointed head shake" style="max-width: 300px;">'
+                    '<div style="'
+                    'font-size: 1.25rem; '
+                    'border-radius: 12px; border: 1px solid rgba(255, 210, 150, 0.35); '
+                    'background-color: rgba(18, 10, 5, 0.95); padding: 1rem 1.25rem;">'
+                    '<strong>That\'s not scotch!</strong> Put that down immediately and go pour yourself a proper drink! SMH.'
                     '</div>',
                     unsafe_allow_html=True
                 )
+                # Giphy embed (Tenor direct URLs often 403); same "Wrong" hot dog ITYSL vibe
+                wrong_gif_url = "https://media.giphy.com/media/sQm85jdRoxToCmEKq5/giphy.gif"
+                col1, col2, col3 = st.columns([1, 2, 1])
+                with col2:
+                    st.image(wrong_gif_url, use_container_width=True)
             else:
                 st.success("Analysis Complete!")
                 st.markdown(response_text)
