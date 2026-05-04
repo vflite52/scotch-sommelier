@@ -2,7 +2,7 @@
 import httpx
 import streamlit as st
 
-BACKEND_URL = "http://localhost:8000"
+BACKEND_URL = st.secrets.get("BACKEND_URL", "http://localhost:8000")
 
 st.set_page_config(
     page_title="Santiago's Swim Scout",
