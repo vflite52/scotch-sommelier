@@ -8,12 +8,12 @@ LOCATIONS: dict[str, dict] = {
     "crater lake": {"lat": 42.9446, "lon": -122.1090, "display": "Crater Lake, OR"},
     "flathead lake": {"lat": 47.8600, "lon": -114.1500, "display": "Flathead Lake, MT"},
     "lake del valle": {"lat": 37.6019, "lon": -121.7097, "display": "Lake Del Valle, CA", "lakemonster_id": 3275},
-    "sf bay aquatic park": {"lat": 37.8081, "lon": -122.4161, "display": "SF Bay Aquatic Park, CA"},
-    "foster city": {"lat": 37.5585, "lon": -122.2711, "display": "Foster City Lagoon, CA"},
-    "santa cruz pier": {"lat": 36.9583, "lon": -122.0174, "display": "Santa Cruz Pier, CA"},
-    "coyote point": {"lat": 37.5916, "lon": -122.3186, "display": "Coyote Point, San Mateo, CA"},
+    "sf bay aquatic park": {"lat": 37.8081, "lon": -122.4161, "display": "SF Bay Aquatic Park, CA", "noaa_station_id": "9414750"},
+    "foster city": {"lat": 37.5585, "lon": -122.2711, "display": "Foster City Lagoon, CA", "noaa_station_id": "9414750"},
+    "santa cruz pier": {"lat": 36.9583, "lon": -122.0174, "display": "Santa Cruz Pier, CA", "noaa_station_id": "9413450"},
+    "coyote point": {"lat": 37.5916, "lon": -122.3186, "display": "Coyote Point, San Mateo, CA", "noaa_station_id": "9414750"},
     "donner lake": {"lat": 39.3229, "lon": -120.2344, "display": "Donner Lake, CA", "lakemonster_id": 327},
-    "waikiki beach": {"lat": 21.2793, "lon": -157.8294, "display": "Waikiki Beach, HI"},
+    "waikiki beach": {"lat": 21.2793, "lon": -157.8294, "display": "Waikiki Beach, HI", "noaa_station_id": "1612340"},
 }
 
 WMO_CODES: dict[int, str] = {
@@ -116,6 +116,43 @@ async def _usgs_water_temp(lat: float, lon: float, display: str) -> dict | None:
         return None
 
 
+async def _noaa_water_temp(station_id: str, display: str) -> dict | None:
+    """Fallback to NOAA CO-OPS for coastal/ocean locations."""
+    params = {
+        "station": station_id,
+        "product": "water_temperature",
+        "date": "latest",
+        "units": "english",
+        "time_zone": "gmt",
+        "format": "json",
+    }
+    try:
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(
+                "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter",
+                params=params,
+                timeout=10.0,
+            )
+            resp.raise_for_status()
+            data = resp.json()
+
+        if "error" in data or not data.get("data"):
+            return None
+
+        reading = data["data"][0]
+        temp_f = float(reading["v"])
+        return {
+            "location": display,
+            "water_temp_f": round(temp_f, 1),
+            "water_temp_c": round((temp_f - 32) * 5 / 9, 1),
+            "observation_time": reading["t"] + " GMT",
+            "noaa_station": data["metadata"]["name"],
+            "source": "NOAA CO-OPS",
+        }
+    except Exception:
+        return None
+
+
 async def _lakemonster_water_temp(lake_id: int, display: str) -> dict | None:
     """Fallback to Lake Monster API. Returns a result dict on success, None on failure."""
     try:
@@ -162,15 +199,22 @@ async def get_water_temperature(location: str) -> dict:
     if result:
         return result
 
-    # Fallback: Lake Monster (if an ID is registered for this location)
+    # Fallback 1: Lake Monster (lakes without USGS sensors)
     lake_id = coords.get("lakemonster_id")
     if lake_id:
         result = await _lakemonster_water_temp(lake_id, display)
         if result:
             return result
 
+    # Fallback 2: NOAA CO-OPS (coastal/ocean locations)
+    noaa_id = coords.get("noaa_station_id")
+    if noaa_id:
+        result = await _noaa_water_temp(noaa_id, display)
+        if result:
+            return result
+
     return {
         "location": display,
         "water_temp_f": None,
-        "note": "No water temperature data available from USGS or Lake Monster.",
+        "note": "No water temperature data available from USGS, Lake Monster, or NOAA.",
     }
